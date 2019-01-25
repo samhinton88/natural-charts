@@ -2,17 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-const Person = styled.div`
-  border-radius: 50%;
-  background: rgba(30, 30, 250, 0.7);
-  height: 70px;
-  width: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
-const Country = styled.div`
+const Entity  = styled.div`
   border: 2px solid rgba(20, 20, 20, 0.8);
   height: 70px;
   width: 70px;
@@ -21,45 +12,47 @@ const Country = styled.div`
   align-items: center;
 `;
 
+const FlexContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+`;
+
 const FlexBlock= styled.div`
   display: flex;
 `
 
-
-const toPerson = (item) => <Person>{item}</Person>;
-const toCountry = (item) => <Country>{item}</Country>;
-
+const toEntity = item => <Entity>{item}</Entity>
 
 const RawResponseContainer = (props) => {
-
+  if(!props.enitites) return null;
   console.log('props in rrc', props)
 
 
   return (
 
-    <>
-      <FlexBlock>
-        <h2>People</h2>{props.people && props.people.map(toPerson)}
-      </FlexBlock>
-      <FlexBlock>
-        <h2>Countries</h2>{props.countries && props.countries.map(toCountry)}
-      </FlexBlock>
-      <FlexBlock>
-        <h2>Dates</h2>{props.dates && props.dates.map(toCountry)}
-      </FlexBlock>
-      <FlexBlock>
-        <h2>Times</h2>{props.times && props.times.map(toCountry)}
-      </FlexBlock>
-    </>
+    <FlexContainer>
+      {Object.keys(props.enitites).map((type) => {
+        if(!props.enitites[type]) return null;
+        return (
+          <FlexBlock>
+            <h2>{type}</h2>
+            {props.enitites[type].map(toEntity)}
+          </FlexBlock>
+        )
+      })}
+    </FlexContainer>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
-    countries: state.ux.data.GPE,
-    people: state.ux.data.PERSON,
-    dates: state.ux.data.DATE,
-    times: state.ux.data.TIME
+    enitites: {
+      countries: state.ux.data.GPE,
+      people: state.ux.data.PERSON,
+      dates: state.ux.data.DATE,
+      times: state.ux.data.TIME
+    }
   }
 }
 
